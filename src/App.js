@@ -1,5 +1,5 @@
 import './App.css';
-import Namelist from './components/Namelist';
+import Namelist2 from './components/Namelist2';
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <header className="App-header">
         <h1 className="App-title">Names Application</h1>
       </header>
-      <Namelist/>
+      <Namelist2/>
     </div>
   );
 }
