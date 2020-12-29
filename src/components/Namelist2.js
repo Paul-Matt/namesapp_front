@@ -1,13 +1,33 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import {apiStates, useApi} from './useApi.js';
 import { DataGrid } from '@material-ui/data-grid';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  listItem: {
+    padding: theme.spacing(1, 0),
+  },
+  total: {
+    fontWeight: 700,
+  },
+  title: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 const Namelist2 = () => {
     const { state, error, data } = useApi('http://localhost:8080/names')
 
+    const classes = useStyles();
+
+    // For the name selector
+    const [showResults, setShowResults] = useState(false)
+    const [selectedName, setSelectedName] = useState();
+    const [selectedNameAmount, setSelectedNameAmount] = useState();
+    
     // Colums for Datagrid
     const columns = [
         { field: 'id', headerName: 'ID', width: 70, hide: true },
@@ -29,6 +49,7 @@ const Namelist2 = () => {
                 <p>Total amount of names: {data.map(name => name.amount)
                   .reduce((total, currentValue) => total + currentValue)}
                 </p>
+                <p>Type or select a spesific name:</p>
                 <div style={{ width: 300 }}>
                     <Autocomplete
                       {...nameProps}
@@ -42,6 +63,9 @@ const Namelist2 = () => {
                       }
                       onChange={handleNameSelected}
                     />
+                    <div>
+                      { showResults && <div id="result">There are {selectedNameAmount} people named {selectedName} on the list</div> }
+                    </div>
                 </div>  
               </Grid>
     }
@@ -53,20 +77,23 @@ const Namelist2 = () => {
     // Showing the amount of selected name given as parameter
     const handleNameSelected = (event, value) => { 
       const result = data.find(firstname => firstname.name === value);
-      console.log(value);
-      console.log(result.name);
+      setShowResults(true);
+      setSelectedName(result.name);
+      setSelectedNameAmount(result.amount);
       return <div id="result">Amount of {result.name} is {result.amount}</div>
     }
 
-    console.log(handleNameSelected);
-  
 
     switch (state) {
         case apiStates.ERROR:
           return <p>ERROR: {error || 'General error'}</p>;
         case apiStates.SUCCESS:
           return (
-            <Grid>
+            <Grid container
+            direction="column"
+            justify="center"
+            alignItems="center"
+            spacing={3}>
             <div style={{ height: 700, width: '50%' }}>
                 <DataGrid 
                 components={{
