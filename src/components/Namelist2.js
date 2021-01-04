@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const Namelist2 = () => {
-    const { state, error, data } = useApi('http://localhost:8080/names')
+    const { state, error, data } = useApi('https://namesapp-backend.herokuapp.com/names')
     const classes = useStyles()
 
     // For the name selector
